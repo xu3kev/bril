@@ -16,7 +16,7 @@ class func_symbol_table:
         self.saved_reg = ['lr', 'fp']
 
     def find_space(self, size):
-        offset = -1
+        offset = None
         for i in range(4):
             if 2**i >= size and len(self.available_stack[i]) > 0:
                 addr = self.available_stack[i][0]
@@ -35,10 +35,10 @@ class func_symbol_table:
         return offset
 
     def alloc_stack(self, size):
-        offset = -1
+        offset = None
         if size <= 8:
             offset = self.find_space(size)
-            if offset == -1:
+            if offset is None:
                 self.available_stack[3] += [self.size, self.size+8]
                 self.size += 16
                 offset = self.find_space(size)
@@ -55,7 +55,7 @@ class func_symbol_table:
     def get_offset(self, varname):
         if varname in self.table:
             entry = self.table[varname]
-            return len(self.saved_reg)*16 + entry.offset
+            return entry.offset
         return None
 
     def get_type(self, varname):
@@ -63,6 +63,11 @@ class func_symbol_table:
             entry = self.table[varname]
             return entry.datatype
         return None
+
+    def show(self):
+        for key in self.table:
+            print(key, hex(self.table[key].offset))
+        print(hex(self.size))
 
 class symbol_table:
     def __init__(self):
@@ -95,5 +100,5 @@ class symbol_table:
 
     def set_regs(self, funcname, regs):
         if funcname not in self.table:
-            return None
+            self.table[funcname] = func_symbol_table(funcname)
         self.table[funcname].saved_reg = regs
