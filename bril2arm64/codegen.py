@@ -20,6 +20,17 @@ def binary_oprand(oprand, offdst, offsrc1, offsrc2):
     print('\t%s     x8, x8, x9' % oprand)
     print('\tstr    x8, [fp, %s]' % str(hex(offdst)))
 
+def copy_stack(offdst, offsrc):
+    print('\tldr    x8, [fp, %s]' % str(hex(offsrc)))
+    print('\tstr    x8, [fp, %s]' % str(hex(offdst)))
+
+def comparison(oprand, offdst, offsrc1, offsrc2):
+    print('\tldr    x8, [fp, %s]' % str(hex(offsrc1)))
+    print('\tldr    x9, [fp, %s]' % str(hex(offsrc2)))
+    print('\tcmp    x8, x9')
+    print('\tcset   x8, %s' % oprand)
+    print('\tstr    x8, [fp, %s]' % str(hex(offdst)))
+
 def unary_oprand(oprand, offdst, offsrc):
     print('\tldr    x8, [fp, %s]' % str(hex(offsrc)))
     print('\t%s     x8, x8' % oprand)
@@ -53,8 +64,6 @@ def printfooter():
     print('''
     .global printbool
 printbool:
-    str    lr, [sp, -0x10]!
-    str    fp, [sp, -0x10]!
     cbz    x1, printboolfalse
     adr	   x0, strtrue
     b      printboolendif
@@ -62,8 +71,6 @@ printbool:
     adr	   x0, strfalse
     printboolendif:
     bl	   printf
-    ldr    fp, [sp], 0x10
-    ldr    lr, [sp], 0x10
     ret	   lr
 
     .data
