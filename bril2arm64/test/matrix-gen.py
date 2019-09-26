@@ -17,13 +17,15 @@ def matrix_mult(n, res, mat1, mat2):
     for k in range(n):
         for i in range(n):
             for j in range(n):
-                print('%s_%d_%d:int = mul %s_%d_%d %s_%d_%d;' % (res, i, j, mat1, i, k, mat2, k, j))
+                print('tmp:int = mul %s_%d_%d %s_%d_%d;' % (mat1, i, k, mat2, k, j))
+                print('%s_%d_%d:int = add %s_%d_%d tmp;' % (res, i, j, res, i, j))
 
 
 def gen(n):
     print('main {')
-    matrix_gen('a', n)
-    matrix_gen('b', n)
+    matrix_gen('a', n, 0, 9)
+    matrix_gen('b', n, 0, 9)
+    matrix_gen('c', n, 0, 0)
     matrix_mult(n, 'c', 'a', 'b')
     matrix_print('c', n)
     print('}')
