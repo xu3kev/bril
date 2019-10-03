@@ -16,8 +16,9 @@ def matrix_print(mat, n):
 def matrix_mult(n, res, mat1, mat2):
     for k in range(n):
         for i in range(n):
+            print('r:int = id %s_%d_%d;' % (mat1, i, k))
             for j in range(n):
-                print('tmp:int = mul %s_%d_%d %s_%d_%d;' % (mat1, i, k, mat2, k, j))
+                print('tmp:int = mul r %s_%d_%d;' % (mat2, k, j))
                 print('%s_%d_%d:int = add %s_%d_%d tmp;' % (res, i, j, res, i, j))
 
 

@@ -80,7 +80,9 @@ def codegen_func(funcname, instrs):
     for instr in instrs:
         if 'dest' in instr:
             symtbl.insert(funcname, instr['dest'], instr['type'])
-    print('\tsub    sp, sp, %s' % str(hex(symtbl.size(funcname))))
+    size = symtbl.size(funcname)
+    print('\tmov x8, %s' % str(hex(size)))
+    print('\tsub    sp, sp, %s' % str(hex(size)))
     print('\tmov    fp,sp')
 
     
@@ -91,7 +93,9 @@ def codegen_func(funcname, instrs):
             codegen_operation(funcname, instr)
 
     print('\t%s_ret:' % funcname)
-    print('\tadd    sp, sp, %s' % str(hex(symtbl.size(funcname))))
+    size = symtbl.size(funcname)
+    print('\tmov x8, %s' % str(hex(size)))
+    print('\tadd    sp, sp, %s' % str(hex(size)))
     saved_regs.reverse()
     for reg in saved_regs:
         gen.pop_stack(reg)

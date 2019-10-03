@@ -44,8 +44,8 @@ def ret(funcname):
 
 def br(offset, label1, label2):
     print('\tldr    x8, [fp, %s]' % str(hex(offset)))
-    print('\tcbz    x8, %s' % label2)
-    print('\tb      %s' % label1)
+    print('\tcbnz   x8, %s' % label1)
+    print('\tb      %s' % label2)
 
 def printint(offset):
     print('\tadr    x0, fmtld')
