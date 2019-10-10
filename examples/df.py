@@ -87,10 +87,15 @@ def run_df(bril, analysis):
         cfg.add_terminators(blocks)
 
         in_, out = df_worklist(blocks, analysis)
+        constraints = []
         for block in blocks:
-            print('{}:'.format(block))
-            print('  in: ', fmt(in_[block]))
-            print('  out:', fmt(out[block]))
+            #print('{}:'.format(block))
+            #print('  in: ', fmt(in_[block]))
+            #print('  out:', fmt(out[block]))
+            constraints += backward_use(out[block], blocks[block], in_[block])
+    return constraints
+
+
 
 
 def gen(block):
@@ -109,6 +114,22 @@ def use(block):
         if 'dest' in i:
             defined.add(i['dest'])
     return used
+
+def backward_use(out, block, in_):
+    ret = [out]
+    used = out
+    for i in block[-1::-1]:
+        if 'dest' in i:
+            used.discard(i['dest'])
+        used.update(v for v in var_args(i))
+        ret.append(used)
+    assert in_==used
+    return ret
+
+
+
+    
+
 
 
 def cprop_transfer(block, in_vals):
@@ -167,4 +188,5 @@ ANALYSES = {
 
 if __name__ == '__main__':
     bril = json.load(sys.stdin)
-    run_df(bril, ANALYSES[sys.argv[1]])
+    constraints = run_df(bril, ANALYSES['live'])
+    print(constraints)
