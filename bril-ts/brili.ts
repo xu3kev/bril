@@ -40,6 +40,22 @@ function mem_access(count: counting, ld_inc: number, st_inc: number) {
   return count;
 }
 
+function regs(instr: bril.ValueOperation, args: number) {
+  var i: number;
+  var loads = 0;
+  var stores= 0;
+  var regex = RegExp('r_*');
+  for (i = 0; i < args; i++){
+    if (!(regex.test(instr.args[i])))
+        loads = loads + 1;
+  }
+  //if (instr.hasOwnProperty('dest')) {
+  if (!(regex.test(instr.dest))) {
+      stores = stores + 1;
+  }
+  return {loads, stores};
+}
+
 function get(env: Env, ident: bril.Ident) {
   let val = env.get(ident);
   if (typeof val === 'undefined') {
@@ -113,97 +129,115 @@ function evalInstr(instr: bril.Instruction, env: Env, count: counting): Action {
     }
 
     env.set(instr.dest, value);
-    count = mem_access(count, 0, 1);
+    var stores = 0;
+    var regex = RegExp('r_*');
+    if (!(regex.test(instr.dest))) {
+        stores = 1;
+    }
+    count = mem_access(count, 0, stores);
     return NEXT;
 
   case "id": {
     let val = get(env, instr.args[0]);
     env.set(instr.dest, val);
-    count = mem_access(count, 1, 1);
+    let {loads, stores} = regs(instr, 1);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "add": {
     let val = getInt(instr, env, 0) + getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "mul": {
     let val = getInt(instr, env, 0) * getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "sub": {
     let val = getInt(instr, env, 0) - getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "div": {
     let val = getInt(instr, env, 0) / getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "le": {
     let val = getInt(instr, env, 0) <= getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "lt": {
     let val = getInt(instr, env, 0) < getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "gt": {
     let val = getInt(instr, env, 0) > getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "ge": {
     let val = getInt(instr, env, 0) >= getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
-    return NEXT;
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
+   return NEXT;
   }
 
   case "eq": {
     let val = getInt(instr, env, 0) === getInt(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "not": {
     let val = !getBool(instr, env, 0);
     env.set(instr.dest, val);
-    count = mem_access(count, 1, 1);
+    let {loads, stores} = regs(instr, 1);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "and": {
     let val = getBool(instr, env, 0) && getBool(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "or": {
     let val = getBool(instr, env, 0) || getBool(instr, env, 1);
     env.set(instr.dest, val);
-    count = mem_access(count, 2, 1);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
