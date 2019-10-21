@@ -96,7 +96,6 @@ def run_df(bril, analysis):
             constraints += backward_use(out[block], blocks[block], in_[block])
     return constraints
 
-
 def gen(block):
     """Variables that are written in the block.
     """
@@ -113,7 +112,6 @@ def use(block):
         if 'dest' in i:
             defined.add(i['dest'])
     return used
-
 
 def backward_use(out, block, in_):
     ret = [out]
@@ -181,7 +179,6 @@ ANALYSES = {
     ),
 }
 
-
 def coloring(constraints, regs):
     variables = []
     for each in constraints:
@@ -198,7 +195,6 @@ def coloring(constraints, regs):
                     right = nodes[list(each)[j]]
                     add_edge(left, right)
     return optimistic_coloring([nodes[name] for name in nodes], regs)
-
 
 if __name__ == '__main__':
     bril = json.load(sys.stdin)
