@@ -1,0 +1,22 @@
+main {
+  vj: int = const 1;
+  vk: int = const 5;
+  v1: int = const 1;
+  v0: int = const 1;
+  vg: int = add vj v1;
+  vh: int = sub vk v0;
+  vf: int = mul vg vh;
+  v2: int = const 2;
+  ve: int = add vj v2;
+  v3: int = const 3;
+  vm: int = add vj v3;
+  vb: int = id vf;
+  v4: int = const 5;
+  vc: int = add ve v4;
+  vd: int = id vc;
+  vk: int = add vm v4;
+  vj: int = id vb;
+  print vj;
+  print vk;
+  print vd;
+}
