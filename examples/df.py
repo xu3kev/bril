@@ -122,7 +122,7 @@ def backward_use(out, block, in_):
         if 'dest' in i:
             used.discard(i['dest'])
         used.update(v for v in var_args(i))
-        ret.append(used)
+        ret.append(set(used))
     assert in_==used
     return ret
 
