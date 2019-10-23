@@ -297,8 +297,8 @@ function evalFunc(func: bril.Function) {
       }
     }
   }
-  console.log(count.count[0]);
-  console.log(count.count[1]);
+  console.log("#load:",count.count[0]);
+  console.log("#store:",count.count[1]);
 }
 
 function evalProg(prog: bril.Program) {
