@@ -1,14 +1,1 @@
-main {
-	r_02: int = const 4;
-	r_03: int = const 5;
-	r_01: bool = const true;
-	br r_01 right left;
-left:
-	b: bool = id r_01;
-	r_01: int = id r_02;
-	jmp end;
-right:
-	r_01: int = id r_03;
-end:
-	print r_01;
-}
+../regalloc/br.out
