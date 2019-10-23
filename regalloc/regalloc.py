@@ -6,6 +6,7 @@ from form_blocks import form_blocks
 import cfg
 from util import var_args
 
+from codegen import codegen
 from graph_coloring import *
 
 # A single dataflow analysis consists of these part:
@@ -179,6 +180,7 @@ ANALYSES = {
     ),
 }
 
+
 def coloring(constraints, regs):
     variables = []
     for each in constraints:
@@ -196,6 +198,7 @@ def coloring(constraints, regs):
                     add_edge(left, right)
     return optimistic_coloring([nodes[name] for name in nodes], regs)
 
+
 if __name__ == '__main__':
     bril = json.load(sys.stdin)
     constraints = run_df(bril, ANALYSES['live'])
@@ -207,3 +210,10 @@ if __name__ == '__main__':
     print("Spilled")
     for each in s:
         print(each.name)
+
+    regmap = {each.name:'__r%02d'%each.color for each in c}
+
+    for func in bril['functions']:
+        print('%s {' % func['name'])
+        codegen(func['instrs'], regmap)
+        print('}')
