@@ -1,18 +1,13 @@
-import sys
-import json
 from collections import namedtuple
 
 from form_blocks import form_blocks
 from form_blocks import TERMINATORS
 import cfg
-import argparse
 from util import var_args
 
-from codegen import codegen
 from graph_coloring import *
 
 PRINT_STATS = False
-REG_PREFIX = "r_"
 
 # A single dataflow analysis consists of these part:
 # - forward: True for forward, False for backward.
@@ -96,11 +91,10 @@ def run_df(bril, analysis):
         in_, out = df_worklist(blocks, analysis)
         constraints = []
         for block in blocks:
-            #print('{}:'.format(block))
-            #print('  in: ', fmt(in_[block]))
-            #print('  out:', fmt(out[block]))
-            constraints += backward_use(out[block], blocks[block], in_[block])
-    return constraints
+            print('{}:'.format(block))
+            print('  in: ', fmt(in_[block]))
+            print('  out:', fmt(out[block]))
+
 
 def gen(block):
     """Variables that are written in the block.
@@ -231,44 +225,20 @@ def code_transform(bril, var_to_reg):
             #print(instr)
 
 
+def liveness_analysis(func):
+    # Form the CFG.
+    blocks = cfg.block_map(form_blocks(func))
+    cfg.add_terminators(blocks)
 
-def var_to_reg_factory(prefix, mapping):
-    def f(var):
-        if var in mapping:
-            return prefix + str(mapping[var])
-        else:
-            return  var
+    in_, out = df_worklist(blocks, ANALYSES['live'])
+    constraints = []
+    for block in blocks:
+        constraints += backward_use(out[block], blocks[block], in_[block])
+    return constraints
 
-    return f
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='register allocation for bril json format')
-    parser.add_argument("--stats", action="store_true", help="print var to reg mapping instead of code generation")
-    parser.add_argument("--num", type=int, default=3, help="number of registers")
-    args = parser.parse_args()
-
-    bril = json.load(sys.stdin)
-    constraints = run_df(bril, ANALYSES['live'])
-
-    if args.stats:
-        PRINT_STATS = True
-    
-    mapping = dict()
-    c,s = coloring(constraints, args.num)
-    print_stats("--- Allocated ---")
-    for each in c:
-        print_stats(each.name, REG_PREFIX+str(each.color))
-        mapping[each.name] =  each.color
-    print_stats("--- Spilled ---")
-    for each in s:
-        print_stats(each.name)
-
-    if args.stats:
-        exit()
-
-    regmap = {each.name:'%s%02d' % (REG_PREFIX, each.color) for each in c}
-
-    for func in bril['functions']:
-        print('%s {' % func['name'])
-        codegen(func['instrs'], regmap)
-        print('}')
+def regalloc(func, regs):
+    constraints = liveness_analysis(func)
+    colored, spilled = coloring(constraints, len(regs))
+    regmap = {each.name:regs[each.color-1] for each in colored}
+    return regmap,colored,spilled
