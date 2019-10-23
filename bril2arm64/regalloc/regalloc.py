@@ -91,11 +91,10 @@ def run_df(bril, analysis):
         in_, out = df_worklist(blocks, analysis)
         constraints = []
         for block in blocks:
-            #print('{}:'.format(block))
-            #print('  in: ', fmt(in_[block]))
-            #print('  out:', fmt(out[block]))
-            constraints += backward_use(out[block], blocks[block], in_[block])
-    return constraints
+            print('{}:'.format(block))
+            print('  in: ', fmt(in_[block]))
+            print('  out:', fmt(out[block]))
+
 
 def gen(block):
     """Variables that are written in the block.
@@ -199,21 +198,20 @@ def coloring(constraints, regs):
     return optimistic_coloring([nodes[name] for name in nodes], regs)
 
 
-if __name__ == '__main__':
-    bril = json.load(sys.stdin)
-    constraints = run_df(bril, ANALYSES['live'])
+def liveness_analysis(func):
+    # Form the CFG.
+    blocks = cfg.block_map(form_blocks(func['instrs']))
+    cfg.add_terminators(blocks)
 
-    c,s = coloring(constraints, int(sys.argv[1]))
-    print("Allocated")
-    for each in c:
-        print(each.name, each.color)
-    print("Spilled")
-    for each in s:
-        print(each.name)
+    in_, out = df_worklist(blocks, ANALYSES['live'])
+    constraints = []
+    for block in blocks:
+        constraints += backward_use(out[block], blocks[block], in_[block])
+    return constraints
 
-    regmap = {each.name:'__r%02d'%each.color for each in c}
 
-    for func in bril['functions']:
-        print('%s {' % func['name'])
-        codegen(func['instrs'], regmap)
-        print('}')
+def regalloc(func, regs):
+    constraints = liveness_analysis(func)
+    colored, spilled = coloring(constraints, len(regs))
+    regmap = {each.name:regs[each.color-1] for each in colored}
+    codegen_func(func['name'], func['instrs'], regmap)
