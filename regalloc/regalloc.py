@@ -3,10 +3,13 @@ import json
 from collections import namedtuple
 
 from form_blocks import form_blocks
+from form_blocks import TERMINATORS
 import cfg
 from util import var_args
 
 from graph_coloring import *
+
+PRINT_STATS = False
 
 # A single dataflow analysis consists of these part:
 # - forward: True for forward, False for backward.
@@ -184,7 +187,7 @@ def coloring(constraints, regs):
     for each in constraints:
         variables += each
     variables = set(variables)
-    print(variables)
+    print_stats("varaibels: ", variables)
 
     nodes = {name:Node(name) for name in variables}
     for each in constraints:
@@ -196,14 +199,58 @@ def coloring(constraints, regs):
                     add_edge(left, right)
     return optimistic_coloring([nodes[name] for name in nodes], regs)
 
+def print_stats(*args):
+    if PRINT_STATS:
+        sys.stdout.write('# ')
+        print(*args)
+
+def code_transform(bril, var_to_reg):
+    #print(bril)
+    for f in bril["functions"]:
+        for instr in f["instrs"]:
+            #print(instr)
+            if 'op' in instr:
+                if instr['op'] == 'br':
+                    # Only the first argument to a branch is a variable.
+                    new_var = (var_to_reg(instr['args'][0]))
+                    instr['args'][0] = new_var
+                elif instr['op'] in TERMINATORS:
+                    # Unconditional branch, for example, has no variable arguments.
+                    pass
+                elif "args" in instr:
+                    for i,arg in enumerate(instr['args']):
+                        new_var = var_to_reg(arg)
+                        instr['args'][i] = new_var
+            if 'dest' in instr:
+                instr['dest'] = var_to_reg(instr['dest'])
+
+            #print(instr)
+
+
+
+def var_to_reg_factory(prefix, mapping):
+    def f(var):
+        if var in mapping:
+            return prefix + str(mapping[var])
+        else:
+            return  var
+
+    return f
+
 if __name__ == '__main__':
     bril = json.load(sys.stdin)
     constraints = run_df(bril, ANALYSES['live'])
 
+    mapping = dict()
     c,s = coloring(constraints, int(sys.argv[1]))
-    print("Allocated")
+    print_stats("Allocated")
     for each in c:
-        print(each.name, each.color)
-    print("Spilled")
+        print_stats(each.name, each.color)
+        mapping[each.name] =  each.color
+    print_stats("Spilled")
     for each in s:
-        print(each.name)
+        print_stats(each.name)
+
+    f = var_to_reg_factory("r", mapping)
+    code_transform(bril, f)
+    print(json.dumps(bril))
