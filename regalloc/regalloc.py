@@ -8,10 +8,11 @@ import cfg
 import argparse
 from util import var_args
 
+from codegen import codegen
 from graph_coloring import *
 
 PRINT_STATS = False
-REG_PREFIX = "r"
+REG_PREFIX = "__r"
 
 # A single dataflow analysis consists of these part:
 # - forward: True for forward, False for backward.
@@ -184,6 +185,7 @@ ANALYSES = {
     ),
 }
 
+
 def coloring(constraints, regs):
     variables = []
     for each in constraints:
@@ -264,6 +266,9 @@ if __name__ == '__main__':
     if args.stats:
         exit()
 
-    f = var_to_reg_factory(REG_PREFIX, mapping)
-    code_transform(bril, f)
-    print(json.dumps(bril))
+    regmap = {each.name:'%s%02d' % (REG_PREFIX, each.color) for each in c}
+
+    for func in bril['functions']:
+        print('%s {' % func['name'])
+        codegen(func['instrs'], regmap)
+        print('}')
