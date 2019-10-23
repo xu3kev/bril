@@ -4,7 +4,7 @@ main {
 	r_01: bool = const true;
 	br r_01 right left;
 left:
-	b: bool = id r_01
+	b: bool = id r_01;
 	r_01: int = id r_02;
 	jmp end;
 right:
