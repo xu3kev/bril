@@ -1,1 +1,1 @@
-command = "bril2json < {filename} | python3 ../../regalloc/testmain.py --num 4"
+command = "bril2json < {filename} | python3 ../../regalloc/testmain.py --num 4 | bril2json | brili"

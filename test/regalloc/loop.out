@@ -1,16 +1,3 @@
-main {
-	inc: int = const 1;
-	length: int = const 10;
-	arr1: int = const 5;
-	r_04: int = const 1;
-	r_02: int = const 0;
-	r_01: bool = gt length r_02;
-	br r_01 loop end;
-loop:
-	r_03: int = add arr1 r_04;
-	r_02: int = add r_02 inc;
-	r_01: bool = gt length r_02;
-	br r_01 loop end;
-end:
-	print r_03;
-}
+6
+#load: 21
+#store: 2

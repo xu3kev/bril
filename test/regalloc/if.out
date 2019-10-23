@@ -1,20 +1,3 @@
-main {
-	r_02: int = const 0;
-	v2: int = const 2;
-	r_03: bool = const false;
-	r_01: int = const 5;
-	r_04: int = const 6;
-	r_01: int = add r_01 r_04;
-	r_01: int = sub r_02 r_01;
-	r_02: int = add r_04 r_01;
-	br r_03 one two;
-one:
-	r_04: int = mul v2 r_02;
-	jmp end;
-two:
-	r_01: int = add r_01 r_02;
-	r_02: int = sub r_02 v2;
-end:
-	r_01: int = add r_04 r_02;
-	print r_01;
-}
+-1
+#load: 1
+#store: 1

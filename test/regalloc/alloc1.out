@@ -1,8 +1,3 @@
-main {
-	r_02: int = const 5;
-	r_01: int = const 3;
-	r_01: int = add r_02 r_01;
-	r_02: int = id r_01;
-	r_01: int = add r_01 r_02;
-	print r_01;
-}
+16
+#load: 0
+#store: 0

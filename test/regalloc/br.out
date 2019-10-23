@@ -1,13 +1,3 @@
-main {
-	r_03: int = const 4;
-	r_02: int = const 5;
-	r_01: bool = const true;
-	br r_01 right left;
-left:
-	r_01: int = id r_03;
-	jmp end;
-right:
-	r_01: int = id r_02;
-end:
-	print r_01;
-}
+5
+#load: 0
+#store: 0

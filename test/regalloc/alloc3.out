@@ -1,21 +1,5 @@
-main {
-	vj: int = const 1;
-	r_03: int = const 2;
-	r_01: int = const 1;
-	r_04: int = const 2;
-	v3: int = const 3;
-	v0: int = const 5;
-	r_02: int = add vj r_01;
-	r_01: int = sub r_03 v0;
-	r_02: int = mul r_02 r_01;
-	r_01: int = add vj r_04;
-	r_03: int = add vj v3;
-	r_02: int = id r_02;
-	r_01: int = add r_01 v0;
-	r_01: int = id r_01;
-	r_03: int = add r_03 v0;
-	vj: int = id r_02;
-	print vj;
-	print r_03;
-	print r_01;
-}
+-6
+9
+8
+#load: 8
+#store: 4
