@@ -1,5 +1,5 @@
 main {
-  r_0: int = const 9;
+  r_0: int = const 90;
   r_1: int = const -20;
   r_3: int = div r_0 r_1;
   print r_3;
