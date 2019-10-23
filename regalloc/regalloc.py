@@ -113,6 +113,7 @@ def use(block):
             defined.add(i['dest'])
     return used
 
+
 def backward_use(out, block, in_):
     ret = [out]
     used = out
@@ -197,13 +198,14 @@ def coloring(constraints, regs):
                     add_edge(left, right)
     return optimistic_coloring([nodes[name] for name in nodes], regs)
 
+
 def print_stats(*args):
     if PRINT_STATS:
         sys.stdout.write('# ')
         print(*args)
 
+
 def code_transform(bril, var_to_reg):
-    #print(bril)
     for f in bril["functions"]:
         for instr in f["instrs"]:
             #print(instr)
@@ -222,8 +224,6 @@ def code_transform(bril, var_to_reg):
             if 'dest' in instr:
                 instr['dest'] = var_to_reg(instr['dest'])
 
-            #print(instr)
-
 
 def liveness_analysis(func):
     # Form the CFG.
@@ -235,6 +235,7 @@ def liveness_analysis(func):
     for block in blocks:
         constraints += backward_use(out[block], blocks[block], in_[block])
     return constraints
+
 
 def regalloc(func, regs):
     constraints = liveness_analysis(func)

@@ -4,6 +4,10 @@ import json
 import codegen as gen
 import symbol_table
 
+sys.path.insert(1, '../regalloc')
+from regalloc import regalloc
+
+
 symtbl = symbol_table.symbol_table()
 binary_oprands = {
         'or': 'orr',
@@ -19,6 +23,7 @@ comparisons = {
         'gt': 'gt',
         'lt': 'lt',
         'eq': 'eq'}
+
 
 def codegen_operation(funcname, instr):
     if instr['op'] == 'const':
@@ -70,7 +75,7 @@ def codegen_operation(funcname, instr):
                 symtbl.get_offset(funcname, instr['dest']),
                 symtbl.get_offset(funcname, instr['args'][0]))
 
-def codegen_func(funcname, instrs):
+def codegen_func(funcname, instrs, regs):
     gen.func_header(funcname)
     symtbl.set_regs(funcname, ['lr', 'fp'])
     saved_regs = symtbl.get_regs(funcname)
@@ -111,8 +116,13 @@ def main():
 
     bril = json.load(sys.stdin)
 
+    caller_save_regs = ['x%d'%i for i in range(9, 16)]
+    callee_save_regs = ['x%d'%i for i in range(19, 30)]
+    regs = caller_save_regs + callee_save_regs
+
     for func in bril['functions']:
-        codegen_func(func['name'], func['instrs'])
+        regmap, colored, spilled = regalloc(func['instrs'], regs)
+        codegen_func(func['name'], func['instrs'], regmap)
 
     gen.printfooter()
 
