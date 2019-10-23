@@ -1,27 +1,20 @@
 main {
-	__r02: int = const 0;
+	r_02: int = const 0;
 	v2: int = const 2;
-	__r03: bool = const false;
-	__r01: int = const 5;
-	__r04: int = const 6;
-	vb: int = id __r01;
-	va: int = id __r01;
-	__r01: int = id vb;
-	__r01: int = add __r01 __r04;
-	vd: int = id __r01;
-	__r01: int = id va;
-	__r01: int = sub __r02 __r01;
-	__r02: int = add __r04 __r01;
-	br __r03 one two;
+	r_03: bool = const false;
+	r_01: int = const 5;
+	r_04: int = const 6;
+	r_01: int = add r_01 r_04;
+	r_01: int = sub r_02 r_01;
+	r_02: int = add r_04 r_01;
+	br r_03 one two;
 one:
-	__r04: int = mul v2 __r02;
+	r_04: int = mul v2 r_02;
 	jmp end;
 two:
-	vb: int = id __r01;
-	__r01: int = id vd;
-	__r01: int = add __r01 __r02;
-	__r02: int = sub __r02 v2;
+	r_01: int = add r_01 r_02;
+	r_02: int = sub r_02 v2;
 end:
-	__r01: int = add __r04 __r02;
-	print __r01;
+	r_01: int = add r_04 r_02;
+	print r_01;
 }

@@ -1,14 +1,13 @@
 main {
-	__r02: int = const 4;
-	__r03: int = const 5;
-	__r01: bool = const true;
-	br __r01 right left;
+	r_02: int = const 4;
+	r_03: int = const 5;
+	r_01: bool = const true;
+	br r_01 right left;
 left:
-	b: bool = id __r01;
-	__r01: int = id __r02;
+	r_01: int = id r_02;
 	jmp end;
 right:
-	__r01: int = id __r03;
+	r_01: int = id r_03;
 end:
-	print __r01;
+	print r_01;
 }

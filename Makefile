@@ -1,6 +1,6 @@
 TESTS := test/interp/*.bril \
 	test/reginterp/*.bril \
-	test/regalloc/*.json \
+	test/regalloc/*.bril \
 	test/regbased/*.bril
 	#test/parse/*.bril \
 	test/print/*.json \
