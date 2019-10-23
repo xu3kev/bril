@@ -1,0 +1,1 @@
+command = "python3 ../../regalloc/regalloc.py --num 4 < {filename}"

@@ -1,0 +1,27 @@
+main {
+	r_02: int = const 0;
+	v2: int = const 2;
+	r_03: bool = const false;
+	r_01: int = const 5;
+	r_04: int = const 6;
+	vb: int = id r_01
+	va: int = id r_01;
+	r_01: int = id vb;
+	r_01: int = r_01 add r_04;
+	vd: int = id r_01;
+	r_01: int = id va;
+	r_01: int = r_02 sub r_01;
+	r_02: int = r_04 add r_01;
+	br r_03 one two;
+one:
+	r_04: int = v2 mul r_02;
+	jmp end;
+two:
+	vb: int = id r_01;
+	r_01: int = id vd;
+	r_01: int = r_01 add r_02;
+	r_02: int = r_02 sub v2;
+end:
+	r_01: int = r_04 add r_02;
+	print r_01;
+}

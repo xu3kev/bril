@@ -1,0 +1,150 @@
+{
+  "functions": [
+    {
+      "instrs": [
+        {
+          "dest": "vj",
+          "op": "const",
+          "type": "int",
+          "value": 1
+        },
+        {
+          "dest": "vk",
+          "op": "const",
+          "type": "int",
+          "value": 2
+        },
+        {
+          "dest": "v1",
+          "op": "const",
+          "type": "int",
+          "value": 1
+        },
+        {
+          "dest": "v2",
+          "op": "const",
+          "type": "int",
+          "value": 2
+        },
+        {
+          "dest": "v3",
+          "op": "const",
+          "type": "int",
+          "value": 3
+        },
+        {
+          "dest": "v0",
+          "op": "const",
+          "type": "int",
+          "value": 5
+        },
+        {
+          "args": [
+            "vj",
+            "v1"
+          ],
+          "dest": "vg",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vk",
+            "v0"
+          ],
+          "dest": "vh",
+          "op": "sub",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vg",
+            "vh"
+          ],
+          "dest": "vf",
+          "op": "mul",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vj",
+            "v2"
+          ],
+          "dest": "ve",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vj",
+            "v3"
+          ],
+          "dest": "vm",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vf"
+          ],
+          "dest": "vb",
+          "op": "id",
+          "type": "int"
+        },
+        {
+          "args": [
+            "ve",
+            "v0"
+          ],
+          "dest": "vc",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vc"
+          ],
+          "dest": "vd",
+          "op": "id",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vm",
+            "v0"
+          ],
+          "dest": "vk",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vb"
+          ],
+          "dest": "vj",
+          "op": "id",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vj"
+          ],
+          "op": "print"
+        },
+        {
+          "args": [
+            "vk"
+          ],
+          "op": "print"
+        },
+        {
+          "args": [
+            "vd"
+          ],
+          "op": "print"
+        }
+      ],
+      "name": "main"
+    }
+  ]
+}
