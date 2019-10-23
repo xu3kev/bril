@@ -12,7 +12,7 @@ from codegen import codegen
 from graph_coloring import *
 
 PRINT_STATS = False
-REG_PREFIX = "__r"
+REG_PREFIX = "r_"
 
 # A single dataflow analysis consists of these part:
 # - forward: True for forward, False for backward.
