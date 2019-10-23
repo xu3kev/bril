@@ -5,11 +5,13 @@ from collections import namedtuple
 from form_blocks import form_blocks
 from form_blocks import TERMINATORS
 import cfg
+import argparse
 from util import var_args
 
 from graph_coloring import *
 
 PRINT_STATS = False
+REG_PREFIX = "r"
 
 # A single dataflow analysis consists of these part:
 # - forward: True for forward, False for backward.
@@ -238,19 +240,30 @@ def var_to_reg_factory(prefix, mapping):
     return f
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='register allocation for bril json format')
+    parser.add_argument("--stats", action="store_true", help="print var to reg mapping instead of code generation")
+    parser.add_argument("--num", type=int, default=3, help="number of registers")
+    args = parser.parse_args()
+
     bril = json.load(sys.stdin)
     constraints = run_df(bril, ANALYSES['live'])
 
+    if args.stats:
+        PRINT_STATS = True
+    
     mapping = dict()
-    c,s = coloring(constraints, int(sys.argv[1]))
-    print_stats("Allocated")
+    c,s = coloring(constraints, args.num)
+    print_stats("--- Allocated ---")
     for each in c:
-        print_stats(each.name, each.color)
+        print_stats(each.name, REG_PREFIX+str(each.color))
         mapping[each.name] =  each.color
-    print_stats("Spilled")
+    print_stats("--- Spilled ---")
     for each in s:
         print_stats(each.name)
 
-    f = var_to_reg_factory("r", mapping)
+    if args.stats:
+        exit()
+
+    f = var_to_reg_factory(REG_PREFIX, mapping)
     code_transform(bril, f)
     print(json.dumps(bril))
