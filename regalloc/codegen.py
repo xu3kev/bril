@@ -24,7 +24,7 @@ def replace_variable(ins, regmap, regs, types):
         if regs[reg].var != dest:
             if regs[reg].dirty:
                 # flush previous variable
-                print('\t%s: %s = id %s' % (regs[reg].var, regs[reg].type, reg))
+                print('\t%s: %s = id %s;' % (regs[reg].var, regs[reg].type, reg))
             # write new variable
             regs[reg] = regstatus(dest, types[dest], reg)
             regs[reg].update()
@@ -66,8 +66,8 @@ def printbril(ins):
         print('\t%s ' % op + ' '.join(ins['args'])+';')
 
     if op in ['add', 'mul', 'sub', 'div', 'eq', 'lt', 'gt', 'le', 'ge', 'and', 'or']:
-        print('\t%s: %s = %s %s %s;' % (ins['dest'], ins['type'], ins['args'][0],
-            op, ins['args'][1]))
+        print('\t%s: %s = %s %s %s;' % (ins['dest'], ins['type'], op, ins['args'][0],
+            ins['args'][1]))
 
     if op == 'not':
         print('\t%s: %s = %s %s;' % (ins['dest'], ins['type'], op, ins['args'][0]))
