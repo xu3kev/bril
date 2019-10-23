@@ -1,0 +1,35 @@
+main {
+	vj: int = const 1;
+	r_04: int = const 5;
+	r_01: int = const 1;
+	r_03: int = const 1;
+	r_02: int = add vj r_01;
+	v1: int = id r_01;
+	r_01: int = sub r_04 r_03;
+	vf: int = id r_02;
+	r_02: int = id vf;
+	r_02: int = mul r_02 r_01;
+	vh: int = id r_01;
+	r_01: int = const 2;
+	r_03: int = add vj r_01;
+	v2: int = id r_01;
+	r_01: int = const 3;
+	vk: int = id r_04;
+	r_04: int = add vj r_01;
+	vb: int = id vf;
+	r_02: int = const 5;
+	v3: int = id r_01;
+	r_01: int = add r_03 r_02;
+	vc: int = id r_01;
+	vd: int = id r_01;
+	r_01: int = id vc;
+	r_01: int = id r_01;
+	vm: int = id r_04;
+	vk: int = id r_04;
+	r_04: int = id vm;
+	r_04: int = add r_04 r_02;
+	vj: int = id vb;
+	print vj;
+	print r_04;
+	print r_01;
+}

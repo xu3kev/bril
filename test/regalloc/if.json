@@ -1,0 +1,131 @@
+{
+  "functions": [
+    {
+      "instrs": [
+        {
+          "dest": "v0",
+          "op": "const",
+          "type": "int",
+          "value": 0
+        },
+        {
+          "dest": "v2",
+          "op": "const",
+          "type": "int",
+          "value": 2
+        },
+        {
+          "dest": "b",
+          "op": "const",
+          "type": "bool",
+          "value": false
+        },
+        {
+          "dest": "vb",
+          "op": "const",
+          "type": "int",
+          "value": 5
+        },
+        {
+          "dest": "vc",
+          "op": "const",
+          "type": "int",
+          "value": 6
+        },
+        {
+          "args": [
+            "vb",
+            "vc"
+          ],
+          "dest": "va",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "v0",
+            "va"
+          ],
+          "dest": "vd",
+          "op": "sub",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vc",
+            "vd"
+          ],
+          "dest": "ve",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "b",
+            "one",
+            "two"
+          ],
+          "op": "br"
+        },
+        {
+          "label": "one"
+        },
+        {
+          "args": [
+            "v2",
+            "ve"
+          ],
+          "dest": "vc",
+          "op": "mul",
+          "type": "int"
+        },
+        {
+          "args": [
+            "end"
+          ],
+          "op": "jmp"
+        },
+        {
+          "label": "two"
+        },
+        {
+          "args": [
+            "vd",
+            "ve"
+          ],
+          "dest": "vb",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "ve",
+            "v2"
+          ],
+          "dest": "ve",
+          "op": "sub",
+          "type": "int"
+        },
+        {
+          "label": "end"
+        },
+        {
+          "args": [
+            "vc",
+            "ve"
+          ],
+          "dest": "vb",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vb"
+          ],
+          "op": "print"
+        }
+      ],
+      "name": "main"
+    }
+  ]
+}

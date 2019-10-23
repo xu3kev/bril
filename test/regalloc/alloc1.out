@@ -1,0 +1,14 @@
+main {
+	__r02: int = const 5;
+	__r01: int = const 3;
+	vc: int = id __r01;
+	va: int = id __r01;
+	__r01: int = id vc;
+	__r01: int = add __r02 __r01;
+	vb: int = id __r02;
+	__r02: int = id __r01;
+	vc: int = id __r01;
+	__r01: int = id va;
+	__r01: int = add __r01 __r02;
+	print __r01;
+}

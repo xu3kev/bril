@@ -16,21 +16,6 @@ class regstatus:
 
 
 def replace_variable(ins, regmap, regs, types):
-    if 'dest' in ins:
-        dest = ins['dest']
-        if dest not in regmap:
-            return
-        reg = regmap[dest]
-        if regs[reg].var != dest:
-            if regs[reg].dirty:
-                # flush previous variable
-                print('\t%s: %s = id %s' % (regs[reg].var, regs[reg].type, reg))
-            # write new variable
-            regs[reg] = regstatus(dest, types[dest], reg)
-            regs[reg].update()
-        
-        ins['dest'] = reg
-
     if 'args' in ins:
         for i in range(len(ins['args'])):
             arg = ins['args'][i]
@@ -38,15 +23,24 @@ def replace_variable(ins, regmap, regs, types):
                 continue
             reg = regmap[arg]
             if regs[reg].var != arg:
-                if regs[reg].dirty:
-                    # flush
-                    print('\t%s: %s = id %s;' % (regs[reg].var, regs[reg].type, 
-                        reg))
-                # load new variable
                 regs[reg] = regstatus(dest, types[arg], reg)
+            if not regs[reg].valid:
                 regs[reg].load()
                 print('\t%s: %s = id %s;' % (reg, regs[reg].type, arg));
             ins['args'][i] = reg
+
+    if 'dest' in ins:
+        dest = ins['dest']
+        if dest not in regmap:
+            return
+        reg = regmap[dest]
+        if regs[reg].var != dest:
+            regs[reg] = regstatus(dest, types[dest], reg)
+        regs[reg].update()
+        
+        ins['dest'] = reg
+
+
 
 
 def printbril(ins):
@@ -66,8 +60,8 @@ def printbril(ins):
         print('\t%s ' % op + ' '.join(ins['args'])+';')
 
     if op in ['add', 'mul', 'sub', 'div', 'eq', 'lt', 'gt', 'le', 'ge', 'and', 'or']:
-        print('\t%s: %s = %s %s %s;' % (ins['dest'], ins['type'], ins['args'][0],
-            op, ins['args'][1]))
+        print('\t%s: %s = %s %s %s;' % (ins['dest'], ins['type'], op, ins['args'][0],
+            ins['args'][1]))
 
     if op == 'not':
         print('\t%s: %s = %s %s;' % (ins['dest'], ins['type'], op, ins['args'][0]))

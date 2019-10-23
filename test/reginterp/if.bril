@@ -1,0 +1,20 @@
+main {
+    v0: int = const 0;
+    v2: int = const 2;
+    b: bool = const false;
+    vb: int = const 5;
+    vc: int = const 6;
+    va: int = add vb vc;
+    vd: int = sub v0 va;
+    ve: int = add vc vd;
+    br b one two;
+one:
+    vc: int = mul v2 ve;
+    jmp end;
+two:
+    vb: int = add vd ve;
+    ve: int = sub ve v2;
+end:
+    vb: int = add vc ve;
+    print vb;
+}

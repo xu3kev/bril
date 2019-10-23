@@ -1,0 +1,8 @@
+main {
+    vb: int = const 5;
+    vc: int = const 3;
+    va: int = add vb vc;
+    vd: int = id va;
+    vc: int = add va vd;
+    print vc;
+}

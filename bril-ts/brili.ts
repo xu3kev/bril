@@ -25,6 +25,36 @@ const argCounts: {[key in bril.OpCode]: number | null} = {
 
 type Value = boolean | BigInt;
 type Env = Map<bril.Ident, Value>;
+type Count = [number, number];
+
+class counting {
+  count = [0, 0]
+}
+
+function mem_access(count: counting, ld_inc: number, st_inc: number) {
+  let loads = count.count[0];
+  let stores= count.count[1];
+  loads = loads + ld_inc;
+  stores= stores+ st_inc;
+  count.count = [loads, stores];
+  return count;
+}
+
+function regs(instr: bril.ValueOperation, args: number) {
+  var i: number;
+  var loads = 0;
+  var stores= 0;
+  var regex = RegExp('r_*');
+  for (i = 0; i < args; i++){
+    if (!(regex.test(instr.args[i])))
+        loads = loads + 1;
+  }
+  //if (instr.hasOwnProperty('dest')) {
+  if (!(regex.test(instr.dest))) {
+      stores = stores + 1;
+  }
+  return {loads, stores};
+}
 
 function get(env: Env, ident: bril.Ident) {
   let val = env.get(ident);
@@ -77,7 +107,7 @@ let END: Action = {"end": true};
  * otherwise, return "next" to indicate that we should proceed to the next
  * instruction or "end" to terminate the function.
  */
-function evalInstr(instr: bril.Instruction, env: Env): Action {
+function evalInstr(instr: bril.Instruction, env: Env, count: counting): Action {
   // Check that we have the right number of arguments.
   if (instr.op !== "const") {
     let count = argCounts[instr.op];
@@ -99,83 +129,115 @@ function evalInstr(instr: bril.Instruction, env: Env): Action {
     }
 
     env.set(instr.dest, value);
+    var stores = 0;
+    var regex = RegExp('r_*');
+    if (!(regex.test(instr.dest))) {
+        stores = 1;
+    }
+    count = mem_access(count, 0, stores);
     return NEXT;
 
   case "id": {
     let val = get(env, instr.args[0]);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 1);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "add": {
     let val = getInt(instr, env, 0) + getInt(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "mul": {
     let val = getInt(instr, env, 0) * getInt(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "sub": {
     let val = getInt(instr, env, 0) - getInt(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "div": {
     let val = getInt(instr, env, 0) / getInt(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "le": {
     let val = getInt(instr, env, 0) <= getInt(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "lt": {
     let val = getInt(instr, env, 0) < getInt(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "gt": {
     let val = getInt(instr, env, 0) > getInt(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "ge": {
     let val = getInt(instr, env, 0) >= getInt(instr, env, 1);
     env.set(instr.dest, val);
-    return NEXT;
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
+   return NEXT;
   }
 
   case "eq": {
     let val = getInt(instr, env, 0) === getInt(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "not": {
     let val = !getBool(instr, env, 0);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 1);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "and": {
     let val = getBool(instr, env, 0) && getBool(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
   case "or": {
     let val = getBool(instr, env, 0) || getBool(instr, env, 1);
     env.set(instr.dest, val);
+    let {loads, stores} = regs(instr, 2);
+    count = mem_access(count, loads, stores);
     return NEXT;
   }
 
@@ -212,10 +274,12 @@ function evalInstr(instr: bril.Instruction, env: Env): Action {
 
 function evalFunc(func: bril.Function) {
   let env: Env = new Map();
+  let count = new counting();
+  count.count = [0, 0];
   for (let i = 0; i < func.instrs.length; ++i) {
     let line = func.instrs[i];
     if ('op' in line) {
-      let action = evalInstr(line, env);
+      let action = evalInstr(line, env, count);
 
       if ('label' in action) {
         // Search for the label and transfer control.
@@ -233,6 +297,8 @@ function evalFunc(func: bril.Function) {
       }
     }
   }
+  console.log("#load:",count.count[0]);
+  console.log("#store:",count.count[1]);
 }
 
 function evalProg(prog: bril.Program) {

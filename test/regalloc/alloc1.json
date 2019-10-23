@@ -1,0 +1,53 @@
+{
+  "functions": [
+    {
+      "instrs": [
+        {
+          "dest": "vb",
+          "op": "const",
+          "type": "int",
+          "value": 5
+        },
+        {
+          "dest": "vc",
+          "op": "const",
+          "type": "int",
+          "value": 3
+        },
+        {
+          "args": [
+            "vb",
+            "vc"
+          ],
+          "dest": "va",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "va"
+          ],
+          "dest": "vd",
+          "op": "id",
+          "type": "int"
+        },
+        {
+          "args": [
+            "va",
+            "vd"
+          ],
+          "dest": "vc",
+          "op": "add",
+          "type": "int"
+        },
+        {
+          "args": [
+            "vc"
+          ],
+          "op": "print"
+        }
+      ],
+      "name": "main"
+    }
+  ]
+}

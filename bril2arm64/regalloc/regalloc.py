@@ -1,13 +1,13 @@
-import sys
-import json
 from collections import namedtuple
 
 from form_blocks import form_blocks
+from form_blocks import TERMINATORS
 import cfg
 from util import var_args
 
-from codegen import codegen
 from graph_coloring import *
+
+PRINT_STATS = False
 
 # A single dataflow analysis consists of these part:
 # - forward: True for forward, False for backward.
@@ -185,7 +185,7 @@ def coloring(constraints, regs):
     for each in constraints:
         variables += each
     variables = set(variables)
-    print(variables)
+    print_stats("varaibels: ", variables)
 
     nodes = {name:Node(name) for name in variables}
     for each in constraints:
@@ -197,10 +197,37 @@ def coloring(constraints, regs):
                     add_edge(left, right)
     return optimistic_coloring([nodes[name] for name in nodes], regs)
 
+def print_stats(*args):
+    if PRINT_STATS:
+        sys.stdout.write('# ')
+        print(*args)
+
+def code_transform(bril, var_to_reg):
+    #print(bril)
+    for f in bril["functions"]:
+        for instr in f["instrs"]:
+            #print(instr)
+            if 'op' in instr:
+                if instr['op'] == 'br':
+                    # Only the first argument to a branch is a variable.
+                    new_var = (var_to_reg(instr['args'][0]))
+                    instr['args'][0] = new_var
+                elif instr['op'] in TERMINATORS:
+                    # Unconditional branch, for example, has no variable arguments.
+                    pass
+                elif "args" in instr:
+                    for i,arg in enumerate(instr['args']):
+                        new_var = var_to_reg(arg)
+                        instr['args'][i] = new_var
+            if 'dest' in instr:
+                instr['dest'] = var_to_reg(instr['dest'])
+
+            #print(instr)
+
 
 def liveness_analysis(func):
     # Form the CFG.
-    blocks = cfg.block_map(form_blocks(func['instrs']))
+    blocks = cfg.block_map(form_blocks(func))
     cfg.add_terminators(blocks)
 
     in_, out = df_worklist(blocks, ANALYSES['live'])
@@ -209,9 +236,8 @@ def liveness_analysis(func):
         constraints += backward_use(out[block], blocks[block], in_[block])
     return constraints
 
-
 def regalloc(func, regs):
     constraints = liveness_analysis(func)
     colored, spilled = coloring(constraints, len(regs))
     regmap = {each.name:regs[each.color-1] for each in colored}
-    codegen_func(func['name'], func['instrs'], regmap)
+    return regmap,colored,spilled

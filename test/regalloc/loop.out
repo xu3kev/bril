@@ -1,0 +1,16 @@
+main {
+	inc: int = const 1;
+	length: int = const 10;
+	arr1: int = const 5;
+	__r04: int = const 1;
+	__r02: int = const 0;
+	__r01: bool = gt length __r02;
+	br __r01 loop end;
+loop:
+	__r03: int = add arr1 __r04;
+	__r02: int = add __r02 inc;
+	__r01: bool = gt length __r02;
+	br __r01 loop end;
+end:
+	print __r03;
+}
