@@ -1,27 +1,27 @@
 main {
-	r_02: int = const 0;
+	__r02: int = const 0;
 	v2: int = const 2;
-	r_03: bool = const false;
-	r_01: int = const 5;
-	r_04: int = const 6;
-	vb: int = id r_01
-	va: int = id r_01;
-	r_01: int = id vb;
-	r_01: int = r_01 add r_04;
-	vd: int = id r_01;
-	r_01: int = id va;
-	r_01: int = r_02 sub r_01;
-	r_02: int = r_04 add r_01;
-	br r_03 one two;
+	__r03: bool = const false;
+	__r01: int = const 5;
+	__r04: int = const 6;
+	vb: int = id __r01;
+	va: int = id __r01;
+	__r01: int = id vb;
+	__r01: int = add __r01 __r04;
+	vd: int = id __r01;
+	__r01: int = id va;
+	__r01: int = sub __r02 __r01;
+	__r02: int = add __r04 __r01;
+	br __r03 one two;
 one:
-	r_04: int = v2 mul r_02;
+	__r04: int = mul v2 __r02;
 	jmp end;
 two:
-	vb: int = id r_01;
-	r_01: int = id vd;
-	r_01: int = r_01 add r_02;
-	r_02: int = r_02 sub v2;
+	vb: int = id __r01;
+	__r01: int = id vd;
+	__r01: int = add __r01 __r02;
+	__r02: int = sub __r02 v2;
 end:
-	r_01: int = r_04 add r_02;
-	print r_01;
+	__r01: int = add __r04 __r02;
+	print __r01;
 }

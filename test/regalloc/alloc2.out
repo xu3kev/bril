@@ -1,35 +1,35 @@
 main {
-	r_04: int = const 1;
+	__r04: int = const 1;
 	vk: int = const 5;
-	r_01: int = const 1;
-	r_03: int = const 1;
-	r_02: int = r_04 add r_01;
-	v1: int = id r_01
-	r_01: int = vk sub r_03;
-	vf: int = id r_02;
-	r_02: int = id vg;
-	r_02: int = r_02 mul r_01;
-	vh: int = id r_01
-	r_01: int = const 2;
-	r_03: int = r_04 add r_01;
-	v2: int = id r_01
-	r_01: int = const 3;
-	vm: int = vj add v3;
-	vj: int = id r_04
-	r_04: int = id r_02;
-	r_02: int = const 5;
-	v3: int = id r_01
-	r_01: int = r_03 add r_02;
-	vc: int = id r_01
-	vd: int = id r_01;
-	r_01: int = id vc;
-	r_01: int = id r_01;
-	vk: int = vm add v4;
-	vb: int = id r_04
-	vj: int = id r_04;
-	r_04: int = id vb;
-	r_04: int = id r_04;
-	print r_04;
+	__r01: int = const 1;
+	__r03: int = const 1;
+	__r02: int = add __r04 __r01;
+	v1: int = id __r01;
+	__r01: int = sub vk __r03;
+	vf: int = id __r02;
+	__r02: int = id vg;
+	__r02: int = mul __r02 __r01;
+	vh: int = id __r01;
+	__r01: int = const 2;
+	__r03: int = add __r04 __r01;
+	v2: int = id __r01;
+	__r01: int = const 3;
+	vm: int = add vj v3;
+	vj: int = id __r04;
+	__r04: int = id __r02;
+	__r02: int = const 5;
+	v3: int = id __r01;
+	__r01: int = add __r03 __r02;
+	vc: int = id __r01;
+	vd: int = id __r01;
+	__r01: int = id vc;
+	__r01: int = id __r01;
+	vk: int = add vm v4;
+	vb: int = id __r04;
+	vj: int = id __r04;
+	__r04: int = id vb;
+	__r04: int = id __r04;
+	print __r04;
 	print vk;
-	print r_01;
+	print __r01;
 }
