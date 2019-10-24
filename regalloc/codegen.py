@@ -41,8 +41,6 @@ def replace_variable(ins, regmap, regs, types):
         ins['dest'] = reg
 
 
-
-
 def printbril(ins):
     op = ins['op']
     if op == 'const':
