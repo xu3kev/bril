@@ -1,0 +1,13 @@
+main {
+    va: int = const 4;
+    vb: int = const 5;
+    b: bool = const true;
+    br b right left;
+left:
+    vd: int = id va;
+    jmp end;
+right:
+    vd: int = id vb;
+end:
+    print vd;
+}

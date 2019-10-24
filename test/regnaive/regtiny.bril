@@ -1,0 +1,4 @@
+main {
+  r_3: int = const 5;
+  print r_3;
+}
