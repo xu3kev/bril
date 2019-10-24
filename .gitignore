@@ -1,2 +1,6 @@
 __pycache__
 .*.swp
+build/
+book/
+node_modules/
+yarn.lock
